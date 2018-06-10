@@ -23,14 +23,16 @@ static double diff_in_second (struct timespec t1, struct timespec t2)
 
 void get_matrix ()
 {
-    int i, j;
+    int i, j, k;
     for (i = 0; i < r; i++)
         for (j = 0; j < c; j++)
-            scanf("%d", &A[i][j]);
-    scanf("%d%d", &c, &r);
+            k = scanf("%d", &A[i][j]);
+    k = scanf("%d%d", &c, &r);
     for (i = 0; i < c; i++)
         for (j = 0; j < r; j++)
-            scanf("%d", &B[i][j]);
+            k = scanf("%d", &B[i][j]);
+    if (!k)
+        printf("ERROR:input error\n");
 }
 
 void display (int *A[])
@@ -73,7 +75,7 @@ int main()
     int i, j;
     struct timespec start, end;
     pthread_t thread[thread_num];
-    scanf("%d%d", &r, &c);
+    i = scanf("%d%d", &r, &c);
     /* declare 2D array of matrix */
     A = (int **)malloc(r * sizeof(int *));
     B = (int **)malloc(r * sizeof(int *));

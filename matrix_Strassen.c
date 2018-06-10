@@ -23,14 +23,16 @@ static double diff_in_second (struct timespec t1, struct timespec t2)
 
 void get_matrix ()
 {
-    int i, j;
+    int i, j, k;
     for (i = 0; i < r; i++)
         for (j = 0; j < c; j++)
-            scanf("%d", &A[i][j]);
-    scanf("%d%d", &c, &r);
+            k = scanf("%d", &A[i][j]);
+    k = scanf("%d%d", &c, &r);
     for (i = 0; i < c; i++)
         for (j = 0; j < r; j++)
-            scanf("%d", &B[i][j]);
+            k = scanf("%d", &B[i][j]);
+    if (!k)
+        printf("ERROR:input error.\n");
 }
 
 void display (int *A[])
@@ -82,48 +84,32 @@ void Strassen (int N, int *A[], int *B[], int *C[])
             A11 | A12
             A21 | A22   
     */
-    if (N == 2)
-    {    
+    if (N == 2)   
         mul(A, B, C);
-    }
     else    
     {
+        /* initialize for array */
         int **A11, **A12, **A21, **A22;
-    int **B11, **B12, **B21, **B22;
-    int **C11, **C12, **C21, **C22;
-    int **P1, **P2, **P3, **P4, **P5, **P6, **P7;
-    int **AA, **BB;
-    A11 = (int **)malloc(N/2 * sizeof(int *));A12 = (int **)malloc(N/2 * sizeof(int *));A21 = (int **)malloc(N/2 * sizeof(int *));A22 = (int **)malloc(N/2 * sizeof(int *));
-    B11 = (int **)malloc(N/2 * sizeof(int *));B12 = (int **)malloc(N/2 * sizeof(int *));B21 = (int **)malloc(N/2 * sizeof(int *));B22 = (int **)malloc(N/2 * sizeof(int *));
-    C11 = (int **)malloc(N/2 * sizeof(int *));C12 = (int **)malloc(N/2 * sizeof(int *));C21 = (int **)malloc(N/2 * sizeof(int *));C22 = (int **)malloc(N/2 * sizeof(int *));
-    P1 = (int **)malloc(N/2 * sizeof(int *));P2 = (int **)malloc(N/2 * sizeof(int *));P3 = (int **)malloc(N/2 * sizeof(int *));P4 = (int **)malloc(N/2 * sizeof(int *));
-    P5 = (int **)malloc(N/2 * sizeof(int *));P6 = (int **)malloc(N/2 * sizeof(int *));P7 = (int **)malloc(N/2 * sizeof(int *));
-    AA = (int **)malloc(N/2 * sizeof(int *));
-    BB = (int **)malloc(N/2 * sizeof(int *));
-    for (int i = 0; i < N/2; i++)
-    {
-        A11[i] = (int *)malloc(N/2 * sizeof(int));
-        A12[i] = (int *)malloc(N/2 * sizeof(int));
-        A21[i] = (int *)malloc(N/2 * sizeof(int));
-        A22[i] = (int *)malloc(N/2 * sizeof(int));
-        B11[i] = (int *)malloc(N/2 * sizeof(int));
-        B12[i] = (int *)malloc(N/2 * sizeof(int));
-        B21[i] = (int *)malloc(N/2 * sizeof(int));
-        B22[i] = (int *)malloc(N/2 * sizeof(int));
-        C11[i] = (int *)malloc(N/2 * sizeof(int));
-        C12[i] = (int *)malloc(N/2 * sizeof(int));
-        C21[i] = (int *)malloc(N/2 * sizeof(int));
-        C22[i] = (int *)malloc(N/2 * sizeof(int));
-        P1[i] = (int *)malloc(N/2 * sizeof(int));
-        P2[i] = (int *)malloc(N/2 * sizeof(int));
-        P3[i] = (int *)malloc(N/2 * sizeof(int));
-        P4[i] = (int *)malloc(N/2 * sizeof(int));
-        P5[i] = (int *)malloc(N/2 * sizeof(int));
-        P6[i] = (int *)malloc(N/2 * sizeof(int));
-        P7[i] = (int *)malloc(N/2 * sizeof(int));
-        AA[i] = (int *)malloc(N/2 * sizeof(int));
-        BB[i] = (int *)malloc(N/2 * sizeof(int));
-    }
+        int **B11, **B12, **B21, **B22;
+        int **C11, **C12, **C21, **C22;
+        int **P1, **P2, **P3, **P4, **P5, **P6, **P7;
+        int **AA, **BB;
+        A11 = (int **)malloc(N/2 * sizeof(int *));A12 = (int **)malloc(N/2 * sizeof(int *));A21 = (int **)malloc(N/2 * sizeof(int *));A22 = (int **)malloc(N/2 * sizeof(int *));
+        B11 = (int **)malloc(N/2 * sizeof(int *));B12 = (int **)malloc(N/2 * sizeof(int *));B21 = (int **)malloc(N/2 * sizeof(int *));B22 = (int **)malloc(N/2 * sizeof(int *));
+        C11 = (int **)malloc(N/2 * sizeof(int *));C12 = (int **)malloc(N/2 * sizeof(int *));C21 = (int **)malloc(N/2 * sizeof(int *));C22 = (int **)malloc(N/2 * sizeof(int *));
+        P1 = (int **)malloc(N/2 * sizeof(int *));P2 = (int **)malloc(N/2 * sizeof(int *));P3 = (int **)malloc(N/2 * sizeof(int *));P4 = (int **)malloc(N/2 * sizeof(int *));
+        P5 = (int **)malloc(N/2 * sizeof(int *));P6 = (int **)malloc(N/2 * sizeof(int *));P7 = (int **)malloc(N/2 * sizeof(int *));
+        AA = (int **)malloc(N/2 * sizeof(int *));BB = (int **)malloc(N/2 * sizeof(int *));
+        for (int i = 0; i < N/2; i++)
+        {
+            A11[i] = (int *)malloc(N/2 * sizeof(int));A12[i] = (int *)malloc(N/2 * sizeof(int));A21[i] = (int *)malloc(N/2 * sizeof(int));A22[i] = (int *)malloc(N/2 * sizeof(int));
+            B11[i] = (int *)malloc(N/2 * sizeof(int));B12[i] = (int *)malloc(N/2 * sizeof(int));B21[i] = (int *)malloc(N/2 * sizeof(int));B22[i] = (int *)malloc(N/2 * sizeof(int));
+            C11[i] = (int *)malloc(N/2 * sizeof(int));C12[i] = (int *)malloc(N/2 * sizeof(int));C21[i] = (int *)malloc(N/2 * sizeof(int));C22[i] = (int *)malloc(N/2 * sizeof(int));
+            P1[i] = (int *)malloc(N/2 * sizeof(int));P2[i] = (int *)malloc(N/2 * sizeof(int));P3[i] = (int *)malloc(N/2 * sizeof(int));P4[i] = (int *)malloc(N/2 * sizeof(int));
+            P5[i] = (int *)malloc(N/2 * sizeof(int));P6[i] = (int *)malloc(N/2 * sizeof(int));P7[i] = (int *)malloc(N/2 * sizeof(int));
+            AA[i] = (int *)malloc(N/2 * sizeof(int));BB[i] = (int *)malloc(N/2 * sizeof(int));
+        }
+        /* set array value */
         for (int i = 0; i < N/2; i++)
             for (int j = 0; j < N/2; j++)
             {
@@ -136,7 +122,6 @@ void Strassen (int N, int *A[], int *B[], int *C[])
                 B21[i][j] = B[i+N/2][j];
                 B22[i][j] = B[i+N/2][j+N/2];
             }
-    
         
         // P1 = A11 x (B12 - B22)
         matrix_sub (N/2, B12, B22, BB);
@@ -189,7 +174,6 @@ void Strassen (int N, int *A[], int *B[], int *C[])
         free(AA);free(BB);
         free(P1);free(P2);free(P3);free(P4);free(P5);free(P6);free(P7);
     }
-    
 }
 
 int main()
@@ -197,7 +181,7 @@ int main()
     int i, j;
     struct timespec start, end;
     //pthread_t thread[thread_num];
-    scanf("%d%d", &r, &c);
+    i = scanf("%d%d", &r, &c);
     /* declare 2D array of matrix */
     A = (int **)malloc(r * sizeof(int *));
     B = (int **)malloc(r * sizeof(int *));
