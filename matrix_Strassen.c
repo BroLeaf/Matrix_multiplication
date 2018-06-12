@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <pthread.h>
 
-#define thread_num 1
 
 int r, c;
 int **A, **B, **C;
@@ -41,18 +39,6 @@ void display (int *A[])
     for (i = 0; i < r; i++, printf("\n"))
         for (j = 0; j < c; j++)
             printf("%5d ", A[i][j]);
-}
-
-
-void *matrix_mul_thread (void *rank_arg)
-{
-    long rank = (long)rank_arg;
-    for (int i = rank * r / thread_num; i < (rank+1) * r / thread_num; i++)
-        for (int j = 0; j < c; j++)
-            for (int k = 0; k < r; k++)
-                C[i][j] += A[i][k] * B[k][j]; 
-    pthread_exit(0);
-    return NULL;
 }
 
 void mul (int *A[], int *B[], int *C[])
@@ -167,7 +153,16 @@ void Strassen (int N, int *A[], int *B[], int *C[])
                 C[i][j + N/2] = C12[i][j];
                 C[i + N/2][j] = C21[i][j];
                 C[i + N/2][j + N/2] = C22[i][j];
-            }   
+            }
+        return;
+        for (int i = 0; i < N/2; i++)
+        {
+            free(A11[i]);free(A12[i]);free(A21[i]);free(A22[i]);
+            free(B11[i]);free(B12[i]);free(B21[i]);free(B22[i]);
+            free(C11[i]);free(C12[i]);free(C21[i]);free(C22[i]);
+            free(AA[i]);free(BB[i]);
+            free(P1[i]);free(P2[i]);free(P3[i]);free(P4[i]);free(P5[i]);free(P6[i]);free(P7[i]);
+        }
         free(A11);free(A12);free(A21);free(A22);
         free(B11);free(B12);free(B21);free(B22);
         free(C11);free(C12);free(C21);free(C22);
@@ -205,8 +200,10 @@ int main()
     Strassen (r, A, B, C);
     clock_gettime(CLOCK_REALTIME, &end);
 
+    display (C);
+
     printf("execution time of Strassen : %lf sec\n", diff_in_second(start, end));
-    //display (C);
+    
 
     return 0;
 }

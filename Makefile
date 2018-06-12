@@ -11,7 +11,7 @@ traditional:
 		@$(CC) $(TUNE) $(CFLAGS) -o matrix_mul matrix_mul.c -lpthread
 
 Strassen:
-		@$(CC) $(TUNE) $(CFLAGS) -o matrix_Strassen matrix_Strassen.c -lpthread
+		@$(CC) $(TUNE) $(CFLAGS) -o matrix_Strassen matrix_Strassen.c
 
 clean:
 		$(RM) gen_test matrix_mul matrix_Strassen
