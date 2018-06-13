@@ -3,7 +3,7 @@
 #include <time.h>
 #include <pthread.h>
 
-#define thread_num 8
+#define thread_num 4
 
 int r, c;
 int **A, **B, **C;
