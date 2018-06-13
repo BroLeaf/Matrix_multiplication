@@ -58,6 +58,9 @@ void matrix_add (int N, int **A, int **B, int **C)
 
 void matrix_mul_seq (int N, int **A, int **B, int **C)
 {
+    for (int i=0; i<N; i++)
+			for (int j=0; j<N; j++)
+				C[i][j]=0;
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++)
             for (int k = 0; k < N; k++)
@@ -214,9 +217,9 @@ int main()
     Strassen (r, A, B, C);
     clock_gettime(CLOCK_REALTIME, &end);
 
-    display (C);
+    //display (C);
 
-    printf("execution time of Strassen : %lf sec\n", diff_in_second(start, end));
+    printf("execution time of Strassen_parallel : %lf sec\n", diff_in_second(start, end));
     
     return 0;
 }

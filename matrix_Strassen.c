@@ -56,37 +56,35 @@ void matrix_add (int N, int **A, int **B, int **C)
 
 void matrix_mul_seq (int N, int **A, int **B, int **C)
 {
+    for (int i=0; i<N; i++)
+			for (int j=0; j<N; j++)
+				C[i][j]=0;
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++)
             for (int k = 0; k < N; k++)
                 C[i][j] += A[i][k] * B[k][j]; 
 }
 
-void Strassen (int size, int **A, int **B, int **C)
+void Strassen (int N, int **A, int **B, int **C)
 {
+
+    /* divide origin matrix into four pieces
+            A11 | A12
+            A21 | A22   
+    */  
+    
+    if (N <= 16) {
+        matrix_mul_seq(N, A, B, C);
+		return;
+	}
 	int **M1, **M2, **M3, **M4, **M5, **M6, **M7;
 	int **A11, **A12, **A21, **A22;
 	int **B11, **B12, **B21, **B22;
 	int **C11, **C12, **C21, **C22;
 	int **AA, **BB;
-	int i, j, k;
-	int N;
+	int i, j, size = N/2;
 
-	/* size==2, multiply it directly */
-	if (size <= 16) {
-		/* clear C[i][j] */
-		for (i=0; i<size; i++)
-			for (j=0; j<size; j++)
-				C[i][j]=0;
-		for (i=0; i<size; i++)
-			for (j=0; j<size; j++)
-				for (k=0; k<size; k++)
-					C[i][j]+=A[i][k]*B[k][j];
-		return;
-	}
-
-	/* alloc memory */
-	N = size/2;
+	/* initialize for array */
 	A11 = (int **)malloc(size * sizeof(int *));A12 = (int **)malloc(size * sizeof(int *));A21 = (int **)malloc(size * sizeof(int *));A22 = (int **)malloc(size * sizeof(int *));
     B11 = (int **)malloc(size * sizeof(int *));B12 = (int **)malloc(size * sizeof(int *));B21 = (int **)malloc(size * sizeof(int *));B22 = (int **)malloc(size * sizeof(int *));
     C11 = (int **)malloc(size * sizeof(int *));C12 = (int **)malloc(size * sizeof(int *));C21 = (int **)malloc(size * sizeof(int *));C22 = (int **)malloc(size * sizeof(int *));
@@ -102,66 +100,69 @@ void Strassen (int size, int **A, int **B, int **C)
         M1[i] = (int *)malloc(size * sizeof(int));M7[i] = (int *)malloc(size * sizeof(int));M6[i] = (int *)malloc(size * sizeof(int));
         AA[i] = (int *)malloc(size * sizeof(int));BB[i] = (int *)malloc(size * sizeof(int));
     }
-	/* seperate matrix */
-	for (i=0; i<N; i++) {
-		for (j=0; j<N; j++) {
-			A11[i][j]=A[i][j];
-			B11[i][j]=B[i][j];
-			A12[i][j]=A[i][j+N];
-			B12[i][j]=B[i][j+N];
-			A21[i][j]=A[i+N][j];
-			B21[i][j]=B[i+N][j];
-			A22[i][j]=A[i+N][j+N];
-			B22[i][j]=B[i+N][j+N];
-		}
-	}
-
+	/* set array value */
+    for (i = 0; i < size; i++)
+    {
+        for (j = 0; j < size; j++)
+        {
+            A11[i][j] = A[i][j];
+            A12[i][j] = A[i][j+size];
+            A21[i][j] = A[i+size][j];
+            A22[i][j] = A[i+size][j+size];
+            B11[i][j] = B[i][j];
+            B12[i][j] = B[i][j+size];
+            B21[i][j] = B[i+size][j];
+            B22[i][j] = B[i+size][j+size];
+        }
+    }
 	/* M1 = (A11 + A22) (B11 + B22) */
-	matrix_add(N,A11,A22,AA);
-	matrix_add(N,B11,B22,BB);
-	Strassen(N,AA,BB,M1);
+	matrix_add(size,A11,A22,AA);
+	matrix_add(size,B11,B22,BB);
+	Strassen(size,AA,BB,M1);
 	/* M2 = (A21 + A22)B11 */
-	matrix_add(N,A21,A22,AA);
-	Strassen(N,AA,B11,M2);
+	matrix_add(size,A21,A22,AA);
+	Strassen(size,AA,B11,M2);
 	/* M3 = A11(B12 − B22) */
-	matrix_sub(N,B12,B22,AA);
-	Strassen(N,A11,AA,M3);
+	matrix_sub(size,B12,B22,AA);
+	Strassen(size,A11,AA,M3);
 	/* M4 = A22(B21 − B11) */
-	matrix_sub(N,B21,B11,AA);
-	Strassen(N,A22,AA,M4);
+	matrix_sub(size,B21,B11,AA);
+	Strassen(size,A22,AA,M4);
 	/* M5 = (A11 + A12)B22 */
-	matrix_add(N,A11,A12,AA);
-	Strassen(N,AA,B22,M5);
+	matrix_add(size,A11,A12,AA);
+	Strassen(size,AA,B22,M5);
 	/* M6 = (A21 − A11)(B11 + B12) */
-	matrix_sub(N,A21,A11,AA);
-	matrix_add(N,B11,B12,BB);
-	Strassen(N,AA,BB,M6);
+	matrix_sub(size,A21,A11,AA);
+	matrix_add(size,B11,B12,BB);
+	Strassen(size,AA,BB,M6);
 	/* M7 = (A12 − A22)(B21 + B22) */
-	matrix_sub(N,A12,A22,AA);
-	matrix_add(N,B21,B22,BB);
-	Strassen(N,AA,BB,M7);
+	matrix_sub(size,A12,A22,AA);
+	matrix_add(size,B21,B22,BB);
+	Strassen(size,AA,BB,M7);
 	/* C11 = M1 + M4 − M5 + M7 */
-	matrix_add(N,M1,M4,AA);
-	matrix_sub(N,M7,M5,BB);
-	matrix_add(N,AA,BB,C11);
+	matrix_add(size,M1,M4,AA);
+	matrix_sub(size,M7,M5,BB);
+	matrix_add(size,AA,BB,C11);
 	/* C12 = M3 + M5 */
-	matrix_add(N,M3,M5,C12);
+	matrix_add(size,M3,M5,C12);
 	/* C21 = M2 + M4 */
-	matrix_add(N,M2,M4,C21);
+	matrix_add(size,M2,M4,C21);
 	/* C22 = M1 − M2 + M3 + M6 */
-	matrix_sub(N,M1,M2,AA);
-	matrix_add(N,M3,M6,BB);
-	matrix_add(N,AA,BB,C22);
+	matrix_sub(size,M1,M2,AA);
+	matrix_add(size,M3,M6,BB);
+	matrix_add(size,AA,BB,C22);
 
-	/* combine matrix */
-	for (i=0; i<N; i++) {
-		for (j=0; j<N; j++) {
-			C[i][j]=C11[i][j];
-			C[i][j+N]=C12[i][j];
-			C[i+N][j]=C21[i][j];
-			C[i+N][j+N]=C22[i][j];
-		}
-	}
+	// save the result
+    for (i = 0; i < size; i++)
+    {
+        for (j = 0; j < size; j++)
+        {
+            C[i][j] = C11[i][j];
+            C[i][j + size] = C12[i][j];
+            C[i + size][j] = C21[i][j];
+            C[i + size][j + size] = C22[i][j];
+        }
+    }
 
 	for (i = 0; i < size; i++)
     {
@@ -211,7 +212,7 @@ int main()
     Strassen (r, A, B, C);
     clock_gettime(CLOCK_REALTIME, &end);
 
-    display (C);
+    //display (C);
 
     printf("execution time of Strassen : %lf sec\n", diff_in_second(start, end));
     

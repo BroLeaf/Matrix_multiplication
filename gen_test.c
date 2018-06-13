@@ -10,14 +10,14 @@ int main(int argc, char* argv[])
     for(i = 0; i < r; i++)
     {
         for(j = 0; j < c; j++)
-            printf("%2d ", (rand()%100));
+            printf("%d ", (rand()%999 + 1));
         printf("\n");
     }
     printf("%d %d\n", c, r);
     for(i = 0; i < c; i++)
     {
         for(j = 0; j < r; j++)
-            printf("%2d ", (rand()%100));
+            printf("%d ", (rand()%999 + 1));
         printf("\n");
     }
     
