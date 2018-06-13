@@ -62,26 +62,6 @@ void matrix_mul_seq (int N, int **A, int **B, int **C)
                 C[i][j] += A[i][k] * B[k][j]; 
 }
 
-int** createMatrix(int size)
-{
-	int** matrix;
-	matrix = (int**) malloc(size * sizeof(int *));
-	for (int i = 0; i < size; i++)
-		matrix[i] = (int*) malloc(size * sizeof(int));
-	return matrix;
-}
-
-void freeMatrix(int **matrix, int n)
-{
-	int i;
-	if (!matrix)
-		return;
-
-	for (i = 0; i < n; i++)
-		free(matrix[i]);
-	free(matrix);
-}
-
 void Strassen (int size, int **A, int **B, int **C)
 {
 	int **M1, **M2, **M3, **M4, **M5, **M6, **M7;
