@@ -24,3 +24,15 @@ make run
 
 ## note
 `display(A)` will show all elements of A.
+
+* matrix_Strassen 
+  * implement of Strassen algorithm
+  
+* matrix_Strassen_parallel 
+  * using omp to paralize
+  
+* matrix_mul 
+  * traditional matrix multiplication with pthread
+  
+* matrix_opt 
+  * cache friendly by using transpose matrix
