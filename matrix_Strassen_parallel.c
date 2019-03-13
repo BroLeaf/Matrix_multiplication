@@ -34,7 +34,7 @@ void get_matrix (int **A, int **B)
         printf("ERROR:input error.\n");
 }
 
-void display (int *A[])
+void display (int **A)
 {
     int i, j;
     for (i = 0; i < r; i++, printf("\n"))
