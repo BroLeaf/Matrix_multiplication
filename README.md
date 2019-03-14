@@ -11,7 +11,7 @@ make run
 // just show how long it take.
 ```
 
-* generate test data
+* generate test data(The first number is row, second is column)
 ```
 ./gen_test 1024 1024 > input.txt
 ```
@@ -20,6 +20,11 @@ make run
 ```
 ./matrix_mul < input.txt
 ./matrix_Strassen < input.txt
+```
+
+* test performance
+```
+sudo make test
 ```
 
 ## note
