@@ -28,5 +28,10 @@ run: $(EXEC)
 		&&./matrix_Strassen < input.txt &&./matrix_Strassen_parallel < input.txt \
 		&& ./matrix_opt < input.txt
 
+test: $(EXEC)
+		perf stat --repeat 100 \
+			-e cache-misses,cache-references,instructions,cycles \
+			./matrix_opt < input.txt
+
 clean:
 		$(RM) gen_test matrix_seq matrix_mul matrix_Strassen matrix_Strassen_parallel matrix_opt
